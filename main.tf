@@ -14,3 +14,11 @@ module "vpc" {
   availability_zones = ["us-west-2a", "us-west-2b", "us-west-2c"]
   vpc_name           = "vpc"
 }
+
+# Підключаємо модуль для ECR
+module "ecr" {
+  source                = "./modules/ecr"
+  ecr_name              = "lesson-5-ecr"
+  scan_on_push          = true
+  allowed_principal_arn = "arn:aws:iam::412930559924:user/terraform-student"
+}
