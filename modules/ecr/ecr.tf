@@ -9,7 +9,7 @@ resource "aws_ecr_repository" "main" {
 # Дозволяємо push і pull лише вказаному IAM principal
 resource "aws_ecr_repository_policy" "main" {
   repository = aws_ecr_repository.main.name
-  policy     = jsonencode({
+  policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
       {

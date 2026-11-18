@@ -145,3 +145,28 @@ terraform apply
 
 Перед підтвердженням `yes` перевірте запропоновані зміни. Для вже створених S3/DynamoDB/VPC доповнення має додати NAT/EIP, приватну маршрутизацію та ECR без заміни наявних ресурсів. Фактичний план залежить від поточного state.
 
+### 4. Видалення ресурсів
+
+Після перевірки приберіть непотрібну інфраструктуру: NAT Gateway і його public IPv4 (Elastic IP) оплачуються навіть без використання застосунку. [Тарифи AWS](https://aws.amazon.com/vpc/pricing/).
+
+Повний `terraform destroy` також видаляє S3/DynamoDB backend, тому спочатку збережіть резервну копію state поза репозиторієм:
+
+```bash
+terraform state pull > ../goit-dev-ops-hw-03-state-backup.json
+```
+
+Закоментуйте весь блок S3 backend у `backend.tf`, перенесіть state локально та підтвердьте копіювання. Перевірте, що локальний state містить ресурси:
+
+```bash
+terraform init -migrate-state
+terraform state list
+```
+
+Лише після успішної міграції очистіть state bucket через S3 Console → **Empty** (включно з усіма версіями й delete markers). Якщо ECR repository містить образи, видаліть їх перед видаленням repository. Збережіть локальний state і його резервну копію до завершення робіт; не додавайте їх у Git.
+
+Перегляньте план видалення, потім виконайте команду та підтвердьте `yes`:
+
+```bash
+terraform plan -destroy
+terraform destroy
+```
